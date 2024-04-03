@@ -51,8 +51,10 @@ const Formula = () => {
         }
 
         if (event.key === 'Backspace') {
-            const del = tags.slice(0, tags.length - 1)
-            setTags(del);
+            if (inputValue.length == 0) {
+                const del = tags.slice(0, tags.length - 1)
+                setTags(del);
+            }
         }
     }
 
@@ -66,14 +68,14 @@ const Formula = () => {
 
     // const [value, setValue] = useState('')
     return (
-        <div>
+        <div className='m-5'>
             <div>
                 Result: {result}
             </div>
 
-            <div className='flex border rounded-[5px] py-[5px] px-[10px] m-5'>
+            <div className='flex border rounded-[5px] py-[5px] px-[10px] my-5'>
                 {tags?.map((tag, index) => (
-                    <span key={index} className='text-nowrap mr-2'>
+                    <span key={index} className={`text-nowrap mr-2 px-2 py-[2px] rounded-md ${tag.type == 'tag' && 'bg-slate-200 '}`}>
                         {tag?.name}
                     </span>
                 ))}
