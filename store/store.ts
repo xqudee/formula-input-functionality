@@ -23,7 +23,6 @@ export const useFormulaStore = create<FormulaState>((set, get) => ({
     result: '0',
     calculateResult: () => {
         const tags = get().tags;
-        if (tags.length % 2 == 0) return;
 
         let string = '';
 

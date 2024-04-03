@@ -1,10 +1,7 @@
 'use client'
 
 import { useSuggestions } from '@/hooks/useSuggestions';
-import { useFormulaStore } from '@/store/store';
-import { Suggestion } from '@/types/types';
-import Autocomplete from 'react-autocomplete'
-import React, { useState } from 'react'
+import React from 'react'
 
 const AutoComplete = ({ inputValue, handleKeyDown } : { inputValue: string, handleKeyDown: (event: React.MouseEvent<HTMLDivElement>) => void }) => {
     const { data: suggestions } = useSuggestions();

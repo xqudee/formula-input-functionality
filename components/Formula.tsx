@@ -1,39 +1,18 @@
-'use client'
-
 import { useSuggestions } from '@/hooks/useSuggestions';
 import { useFormulaStore } from '@/store/store';
 import { Suggestion } from '@/types/types';
-// import Autocomplete from 'react-autocomplete'
 import React, { useEffect, useState } from 'react'
-import ReactSelect, { SingleValue } from 'react-select';
 import AutoComplete from './AutoComplete';
 
-interface OptionType {
-    value: string;
-    label: string;
-  }
-
 const Formula = () => {
-    const { tags, setTags, inputValue, setInputValue, calculateResult, result } = useFormulaStore();
+    const { tags, setTags, inputValue, setInputValue, calculateResult } = useFormulaStore();
     const { data: suggestions } = useSuggestions();
 
     const addTag = (inputValue: string) => {
         if (inputValue.length == 0) return;
 
         const tagItem = suggestions?.find(s => s.name.includes(inputValue))
-        if (!tagItem) {
-            const supportedOperands = ['+', '-', '*', '/', '(', ')', '^'];
-            if (supportedOperands.includes(inputValue)) {
-                const newOperand = {
-                    name: inputValue,
-                    type: 'operand'
-                };
-                const newTags = [...tags, newOperand] as Suggestion[];
-                setTags(newTags);
-            } else {
-                console.error('Unsupported operand:', inputValue);
-            }
-        } else {
+        if (tagItem) {
             const newI = {
                 ...tagItem,
                 type: 'tag'
@@ -54,8 +33,22 @@ const Formula = () => {
             if (inputValue.length == 0) {
                 const del = tags.slice(0, tags.length - 1)
                 setTags(del);
+                calculateResult();
             }
         }
+    }
+
+    const changeInput = (input: string) => {
+        const supportedOperands = ['+', '-', '*', '/', '(', ')', '^'];
+        if (supportedOperands.includes(input)) {
+            const operand = {
+                name: input,
+                type: 'operand'
+            }
+            const newTags = [...tags, operand] as Suggestion[];
+            setTags(newTags);
+        }
+        else setInputValue(input)
     }
 
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -66,12 +59,8 @@ const Formula = () => {
         calculateResult();
     }, [tags])
 
-    // const [value, setValue] = useState('')
     return (
-        <div className='m-5'>
-            <div>
-                Result: {result}
-            </div>
+        <>
 
             <div className='flex border rounded-[5px] py-[5px] px-[10px] my-5'>
                 {tags?.map((tag, index) => (
@@ -79,25 +68,11 @@ const Formula = () => {
                         {tag?.name}
                     </span>
                 ))}
-                <input name='tag' value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={handleEnter} />
-                {/* <Autocomplete
-                    wrapperProps={{ className: 'w-[100%] outline-none' }}
-                    getItemValue={(item) => item.name}
-                    items={suggestions as any[] || []}
-                    renderItem={(item, isHighlighted) =>
-                        <div style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
-                        {item.name.includes(inputValue) && item.name }
-                        </div>
-                    }
-                    value={inputValue || ''}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onSelect={(_, item) => handleInputChange(item)}
-                    
-                /> */}
+                <input name='tag' value={inputValue} onChange={(e) => changeInput(e.target.value)} onKeyDown={handleEnter} autoComplete='off' />
             </div>
 
             <AutoComplete inputValue={inputValue} handleKeyDown={handleClick} />
-        </div>
+        </>
     )
 }
 
