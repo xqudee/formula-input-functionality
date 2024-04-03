@@ -11,9 +11,9 @@ const AutoComplete = ({ inputValue, handleKeyDown } : { inputValue: string, hand
 
     return (
         <div className='w-[100%] border-1 p-2'>
-            {suggestions?.map((item) => (
+            {suggestions?.map((item, index) => (
                 item.name.includes(inputValue) &&
-                <div onClick={(e) => handleKeyDown(e)}>{item.name}</div>
+                <div key={index} onClick={(e) => handleKeyDown(e)}>{item.name}</div>
             ))}
         </div>
     )
